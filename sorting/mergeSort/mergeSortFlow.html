@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge Sort Memory & Code Flow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .code-line {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        .code-line.active {
+            background-color: #fef08a;
+            border-left-color: #eab308;
+            font-weight: 600;
+        }
+        .node {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            background: white;
+            min-width: 140px;
+            text-align: center;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+        .node.active {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            transform: translateY(-5px);
+        }
+        .node.merged {
+            border-color: #10b981;
+            background: #ecfdf5;
+        }
+        .stack-item {
+            border-left: 4px solid #3b82f6;
+            margin-bottom: 6px;
+            padding: 6px 10px;
+            background: #f8fafc;
+            font-size: 0.8rem;
+            border-radius: 0 4px 4px 0;
+        }
+        .memory-badge {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 99px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen font-sans">
+
+    <div class="max-w-7xl mx-auto p-4 md:p-8">
+        <header class="mb-6 text-center">
+            <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">Merge Sort: Memory & Code Flow</h1>
+            <p class="text-slate-500 mt-2">Observe how high-level recursion translates to low-level memory allocation.</p>
+            <!-- Fayas KP Credit Badge added here -->
+            <div class="mt-4 inline-block px-4 py-1.5 rounded-full bg-blue-100 border border-blue-200 text-blue-700 text-sm font-semibold tracking-wide shadow-sm">
+                Created by Fayas KP
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Side Panel: Controls & Stack (3 cols) -->
+            <div class="lg:col-span-3 space-y-4">
+                <!-- Controls -->
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="font-bold mb-4 text-slate-800 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-6M9 20V10M15 20V14M18 20V7M6 20v-4"/></svg>
+                        Controls
+                    </h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 block mb-1 uppercase">Input Array</label>
+                            <input type="text" id="inputArray" value="38, 27, 43, 3, 9" class="w-full p-2.5 bg-slate-50 border rounded-lg border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition">
+                        </div>
+                        <button id="startBtn" class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 shadow-md transition-all active:scale-95">Initialize</button>
+                        
+                        <div class="flex gap-2">
+                            <button id="prevBtn" class="flex-1 bg-slate-200 py-2 rounded-lg text-sm font-medium hover:bg-slate-300 disabled:opacity-30 disabled:cursor-not-allowed transition" disabled>Back</button>
+                            <button id="nextBtn" class="flex-1 bg-slate-800 text-white py-2 rounded-lg text-sm font-medium hover:bg-slate-900 disabled:opacity-30 disabled:cursor-not-allowed shadow-md transition active:scale-95" disabled>Next Step</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Call Stack -->
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="font-bold mb-4 text-slate-800 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12H3M21 12l-4-4M21 12l-4 4"/></svg>
+                        Recursion Stack
+                    </h2>
+                    <div id="stackContainer" class="space-y-1 min-h-[100px] max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                        <p class="text-slate-400 text-xs italic">Stack is empty. Start sort to populate.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: Visualization (6 cols) -->
+            <div class="lg:col-span-6 bg-white p-8 rounded-2xl shadow-sm border border-slate-200 relative min-h-[600px] flex flex-col">
+                <div class="flex justify-between items-center mb-8 border-b pb-4 border-slate-100">
+                    <span id="stepCounter" class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase">Step 0 / 0</span>
+                    <div id="memoryState" class="text-xs font-medium text-slate-500 italic"></div>
+                </div>
+                
+                <div id="vizArea" class="flex-grow flex flex-col items-center justify-center gap-10">
+                    <div class="text-center text-slate-300">
+                        <svg class="mx-auto w-16 h-16 opacity-20 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        <p>Waiting for input...</p>
+                    </div>
+                </div>
+
+                <div id="explanation" class="mt-auto p-4 bg-slate-50 rounded-xl border border-slate-200 text-sm text-slate-700 leading-relaxed shadow-inner">
+                    Setup an array to see the memory flow logic.
+                </div>
+            </div>
+
+            <!-- Right Panel: Code Flow (3 cols) -->
+            <div class="lg:col-span-3">
+                <div class="bg-slate-900 rounded-2xl shadow-xl border border-slate-800 overflow-hidden h-full flex flex-col">
+                    <div class="bg-slate-800 px-4 py-3 flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Algorithm Flow</span>
+                        <div class="flex gap-1.5">
+                            <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                        </div>
+                    </div>
+                    <div id="codeBlock" class="p-4 font-mono text-[11px] leading-relaxed text-slate-300 overflow-y-auto">
+                        <!-- Code lines injected here -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const vizArea = document.getElementById('vizArea');
+        const stackContainer = document.getElementById('stackContainer');
+        const explanation = document.getElementById('explanation');
+        const codeBlock = document.getElementById('codeBlock');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const startBtn = document.getElementById('startBtn');
+        const inputArray = document.getElementById('inputArray');
+        const stepCounterDisplay = document.getElementById('stepCounter');
+
+        const algorithmCode = [
+            { line: 0, text: "function mergeSort(arr) {", indent: 0 },
+            { line: 1, text: "  if (arr.length <= 1) return arr;", indent: 0 },
+            { line: 2, text: "  let mid = Math.floor(arr.length / 2);", indent: 0 },
+            { line: 3, text: "  let left = arr.slice(0, mid);", indent: 0 },
+            { line: 4, text: "  let right = arr.slice(mid);", indent: 0 },
+            { line: 5, text: "  return merge(", indent: 0 },
+            { line: 6, text: "    mergeSort(left),", indent: 1 },
+            { line: 7, text: "    mergeSort(right)", indent: 1 },
+            { line: 8, text: "  );", indent: 0 },
+            { line: 9, text: "}", indent: 0 },
+            { line: 10, text: "", indent: 0 },
+            { line: 11, text: "function merge(L, R) {", indent: 0 },
+            { line: 12, text: "  let result = [];", indent: 0 },
+            { line: 13, text: "  while (L.length && R.length) {", indent: 0 },
+            { line: 14, text: "    // Push smallest to result...", indent: 1 },
+            { line: 15, text: "  }", indent: 0 },
+            { line: 16, text: "  return result.concat(L, R);", indent: 0 },
+            { line: 17, text: "}", indent: 0 }
+        ];
+
+        function initCodeDisplay() {
+            codeBlock.innerHTML = algorithmCode.map(c => `
+                <div class="code-line py-1 px-2 whitespace-pre" id="line-${c.line}">${'  '.repeat(c.indent)}${c.text}</div>
+            `).join('');
+        }
+
+        let steps = [];
+        let currentStep = -1;
+
+        function generateSteps(arr) {
+            steps = [];
+            const trace = (data, depth, side = 'root') => {
+                // Initial call
+                steps.push({
+                    type: 'call',
+                    arr: [...data],
+                    depth,
+                    side,
+                    line: 0,
+                    message: `Function called with array: [${data}]`,
+                    memory: "Stack Frame Created"
+                });
+
+                // Base Case Check
+                steps.push({
+                    type: 'base-check',
+                    arr: [...data],
+                    depth,
+                    line: 1,
+                    message: data.length <= 1 ? `Base case met! Array length is ${data.length}.` : `Checking base case... length is ${data.length}. Continuing.`,
+                    memory: "Evaluation"
+                });
+
+                if (data.length <= 1) return data;
+
+                // Split Logic
+                const mid = Math.floor(data.length / 2);
+                steps.push({ type: 'logic', arr: [...data], depth, line: 2, message: `Calculating midpoint: index ${mid}`, memory: "CPU Calculation" });
+                
+                const left = data.slice(0, mid);
+                steps.push({ type: 'split', arr: [...data], sub: [...left], depth, line: 3, message: `Slicing left partition: [${left}]`, memory: "Heap Allocation (Left)" });
+                
+                const right = data.slice(mid);
+                steps.push({ type: 'split', arr: [...data], sub: [...right], depth, line: 4, message: `Slicing right partition: [${right}]`, memory: "Heap Allocation (Right)" });
+
+                // Recursive Calls
+                steps.push({ type: 'logic', arr: [...data], depth, line: 6, message: `Recursing into the LEFT partition.`, memory: "Stack Push" });
+                const sortedLeft = trace(left, depth + 1, 'left');
+                
+                steps.push({ type: 'logic', arr: [...data], depth, line: 7, message: `Recursing into the RIGHT partition.`, memory: "Stack Push" });
+                const sortedRight = trace(right, depth + 1, 'right');
+
+                // Merge Phase
+                steps.push({
+                    type: 'pre-merge',
+                    left: [...sortedLeft],
+                    right: [...sortedRight],
+                    depth,
+                    line: 11,
+                    message: `Merge phase: Combining sorted sub-arrays [${sortedLeft}] and [${sortedRight}]`,
+                    memory: "Memory Merge"
+                });
+
+                const merged = [];
+                let i = 0, j = 0;
+                while (i < sortedLeft.length && j < sortedRight.length) {
+                    if (sortedLeft[i] < sortedRight[j]) {
+                        merged.push(sortedLeft[i]);
+                        i++;
+                    } else {
+                        merged.push(sortedRight[j]);
+                        j++;
+                    }
+                }
+                const result = [...merged, ...sortedLeft.slice(i), ...sortedRight.slice(j)];
+                
+                steps.push({
+                    type: 'merge-complete',
+                    arr: [...result],
+                    depth,
+                    line: 16,
+                    message: `Merge complete. Returning sorted result [${result}] up the stack.`,
+                    memory: "Stack Pop / Memory Freed"
+                });
+
+                return result;
+            };
+
+            trace(arr, 0);
+        }
+
+        function renderStep(index) {
+            const step = steps[index];
+            if (!step) return;
+
+            stepCounterDisplay.innerText = `Step ${index + 1} / ${steps.length}`;
+            explanation.innerHTML = `<strong>Context:</strong> ${step.message}`;
+            document.getElementById('memoryState').innerHTML = `<span class="memory-badge ${step.memory.includes('Alloc') ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}">${step.memory}</span>`;
+
+            // Update Code Highlight
+            document.querySelectorAll('.code-line').forEach(el => el.classList.remove('active'));
+            const activeLine = document.getElementById(`line-${step.line}`);
+            if (activeLine) {
+                activeLine.classList.add('active');
+                activeLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            // Render Stack
+            stackContainer.innerHTML = '';
+            for(let i=0; i<=index; i++) {
+                const s = steps[i];
+                if (s.type === 'call') {
+                    const el = document.createElement('div');
+                    el.className = 'stack-item';
+                    el.innerHTML = `<span class="font-bold text-blue-600">Depth ${s.depth}</span>: mergeSort([${s.arr}])`;
+                    stackContainer.prepend(el);
+                } else if (s.type === 'merge-complete') {
+                    // When a call returns, conceptually the top of the stack is popped
+                    if (stackContainer.firstChild) stackContainer.removeChild(stackContainer.firstChild);
+                }
+            }
+            if (!stackContainer.hasChildNodes()) {
+                stackContainer.innerHTML = '<p class="text-slate-400 text-xs italic">Stack empty.</p>';
+            }
+
+            // Render Main Viz Area
+            vizArea.innerHTML = '';
+            const node = document.createElement('div');
+            node.className = `node active animate-in fade-in zoom-in duration-300`;
+            
+            let displayContent = "";
+            if (step.type === 'pre-merge') {
+                displayContent = `
+                    <div class="flex flex-col items-center gap-2">
+                        <div class="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-1">Merging Partitions</div>
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-blue-50 border-2 border-blue-200 rounded-lg font-mono font-bold text-blue-700">${step.left.join(', ')}</div>
+                            <div class="text-xl text-slate-300">+</div>
+                            <div class="p-3 bg-emerald-50 border-2 border-emerald-200 rounded-lg font-mono font-bold text-emerald-700">${step.right.join(', ')}</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                const isResult = step.type === 'merge-complete' || (step.type === 'base-check' && step.arr.length <= 1);
+                if (isResult) node.className = "node merged shadow-2xl scale-110";
+                
+                displayContent = `
+                    <div class="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-1">${isResult ? 'Returned Data' : 'Current Array Segment'}</div>
+                    <div class="text-2xl font-mono font-black text-slate-800">${step.arr.join(', ')}</div>
+                `;
+            }
+
+            node.innerHTML = `
+                <div class="absolute -top-3 -right-3 w-8 h-8 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center text-[10px] font-bold text-slate-500 shadow-sm">
+                    ${step.depth}
+                </div>
+                ${displayContent}
+            `;
+            
+            vizArea.appendChild(node);
+
+            // Button States
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === steps.length - 1;
+        }
+
+        startBtn.addEventListener('click', () => {
+            const arr = inputArray.value.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+            if (arr.length === 0) return;
+            
+            generateSteps(arr);
+            currentStep = 0;
+            renderStep(currentStep);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                renderStep(currentStep);
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 0) {
+                currentStep--;
+                renderStep(currentStep);
+            }
+        });
+
+        initCodeDisplay();
+    </script>
+</body>
+</html>

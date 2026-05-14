@@ -1,0 +1,22 @@
+tree
+_________
+check in balanced,
+
+traversal :DFS and BFS
+
+-------------------------
+binary search tree
+______________
+
+efficiency  based on the balanced.
+
+if it more sided to a side it will take too much time, so there is some balancing Tecknicks:-
+AVL trees or Red-black tree use for this top prevent it.
+
+
+impliments:-
+*)contains:-keep it all nodes left as small of the curr, and right all are bigger than the current.
+
+*)traversal:- pre order:-fist look the main then left and right.
+in order:- first look the left side then main then right.
+post order:- first left then right then only the main.

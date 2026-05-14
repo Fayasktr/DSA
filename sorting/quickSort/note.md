@@ -19,6 +19,8 @@ Then it places:
 - smaller elements on the left side of the pivot
 - greater elements on the right side of the pivot
 
+- but better is choose a randome one for the pivot, because of the 
+
 After that, the same process is repeated for the left and right parts of the array.
 
 ## Example

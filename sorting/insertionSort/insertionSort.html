@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insertion Sort - Memory Flow</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons for UI Buttons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'Fira Code', monospace; }
+        
+        /* Custom scrollbar for code block */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #1f2937; }
+        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+
+        .code-line {
+            padding: 2px 8px;
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .code-line.active {
+            background-color: rgba(59, 130, 246, 0.2); /* Blue tint */
+            border-left-color: #3b82f6;
+            color: #fff;
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-200 h-screen w-screen overflow-hidden flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-gray-900 border-b border-gray-800 p-4 shadow-md flex justify-between items-center z-10 flex-wrap gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
+                Memory Flow: Insertion Sort
+            </h1>
+            <p class="text-sm text-gray-400 mt-1">Interactive step-by-step execution viewer <span class="text-gray-600 mx-2">|</span> <span class="text-emerald-400 font-medium tracking-wide">Created by Fayas KP</span></p>
+        </div>
+        
+        <!-- Dynamic Input Controls -->
+        <div class="flex items-center gap-2 bg-gray-950 p-1.5 rounded-lg border border-gray-800 shadow-inner order-last md:order-none w-full md:w-auto justify-center">
+            <span class="text-xs text-gray-500 font-mono pl-2">arr = [</span>
+            <input type="text" id="array-input" value="3, 2, 4, 2, 5, 6, 1" class="bg-transparent border-none text-orange-400 font-mono text-sm w-40 sm:w-56 focus:outline-none focus:ring-0 text-center placeholder-gray-700" placeholder="e.g. 5, 1, 4">
+            <span class="text-xs text-gray-500 font-mono pr-2">]</span>
+            <button id="btn-update-array" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-1.5 rounded transition-all font-semibold shadow-md active:scale-95">Update</button>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <span class="flex items-center gap-2 text-xs font-medium text-gray-400"><div class="w-3 h-3 bg-emerald-500/80 rounded-sm"></div> Sorted Portion</span>
+            <span class="flex items-center gap-2 text-xs font-medium text-gray-400"><div class="w-3 h-3 border-2 border-yellow-400 rounded-sm"></div> Index i</span>
+            <span class="flex items-center gap-2 text-xs font-medium text-gray-400"><div class="w-3 h-3 border-2 border-red-500 rounded-sm"></div> Index j</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col md:flex-row overflow-hidden">
+        
+        <!-- Left Panel: Code Execution -->
+        <div class="w-full md:w-1/2 lg:w-2/5 p-6 flex flex-col border-r border-gray-800 bg-gray-900/50 overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-300 tracking-wide uppercase text-sm">Source Code</h2>
+                <span class="px-2 py-1 bg-gray-800 text-xs rounded text-gray-400">JavaScript</span>
+            </div>
+            
+            <div id="code-container" class="bg-gray-950 p-4 rounded-xl shadow-inner font-mono text-sm text-gray-400 flex-grow relative overflow-x-auto leading-relaxed border border-gray-800">
+                <div class="code-line" id="line-0"><span class="text-purple-400">let</span> arr = [<span class="text-orange-400" id="code-array-display">3, 2, 4, 2, 5, 6, 1</span>];</div>
+                <div class="code-line" id="line-1"><span class="text-purple-400">for</span> (<span class="text-purple-400">let</span> i = <span class="text-orange-400">1</span>; i &lt; arr.<span class="text-blue-400">length</span>; i++) {</div>
+                <div class="code-line" id="line-2">    <span class="text-purple-400">let</span> current = arr[i];</div>
+                <div class="code-line" id="line-3">    <span class="text-purple-400">let</span> j = i - <span class="text-orange-400">1</span>;</div>
+                <div class="code-line" id="line-4">    <span class="text-purple-400">while</span> (j &gt;= <span class="text-orange-400">0</span> &amp;&amp; arr[j] &gt; current) {</div>
+                <div class="code-line" id="line-5">        arr[j + <span class="text-orange-400">1</span>] = arr[j];</div>
+                <div class="code-line" id="line-6">        j--;</div>
+                <div class="code-line" id="line-7">    }</div>
+                <div class="code-line" id="line-8">    arr[j + <span class="text-orange-400">1</span>] = current;</div>
+                <div class="code-line" id="line-9">}</div>
+                <div class="code-line" id="line-10"><span class="text-blue-400">console</span>.<span class="text-yellow-200">log</span>(arr);</div>
+            </div>
+        </div>
+
+        <!-- Right Panel: State Visualization -->
+        <div class="w-full md:w-1/2 lg:w-3/5 p-6 flex flex-col relative bg-gray-900/20">
+            
+            <!-- Array Visualizer -->
+            <div class="flex-grow flex flex-col justify-center mb-8">
+                <h3 class="text-center text-gray-500 font-medium mb-12 tracking-widest uppercase text-sm">Memory: arr</h3>
+                <div id="array-container" class="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6">
+                    <!-- Array blocks will be injected here by JS -->
+                </div>
+            </div>
+
+            <!-- Variables Tracker -->
+            <div class="grid grid-cols-3 gap-4 mb-8">
+                <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 flex flex-col items-center shadow-lg">
+                    <span class="text-xs text-gray-500 uppercase font-bold mb-1">Index 'i'</span>
+                    <span id="var-i" class="font-mono text-2xl text-yellow-400 font-bold">-</span>
+                </div>
+                <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 flex flex-col items-center shadow-lg">
+                    <span class="text-xs text-gray-500 uppercase font-bold mb-1">Index 'j'</span>
+                    <span id="var-j" class="font-mono text-2xl text-red-400 font-bold">-</span>
+                </div>
+                <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 flex flex-col items-center shadow-lg">
+                    <span class="text-xs text-gray-500 uppercase font-bold mb-1">Variable 'current'</span>
+                    <span id="var-current" class="font-mono text-2xl text-blue-400 font-bold">-</span>
+                </div>
+            </div>
+
+            <!-- Step Explanation -->
+            <div class="bg-blue-900/20 border border-blue-500/50 rounded-xl p-5 mb-8 shadow-inner min-h-[100px] flex items-center justify-center">
+                <p id="explanation-text" class="text-lg text-blue-100 text-center font-medium leading-relaxed">
+                    Click "Play" or "Next Step" to start tracking memory flow.
+                </p>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex justify-center items-center gap-4 mt-auto pb-4">
+                <button id="btn-reset" class="p-3 bg-gray-800 hover:bg-gray-700 rounded-full transition-colors text-gray-300" title="Reset">
+                    <i class="ph ph-arrow-counter-clockwise text-2xl"></i>
+                </button>
+                <button id="btn-prev" class="px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors flex items-center gap-2 font-medium" disabled>
+                    <i class="ph ph-caret-left"></i> Prev Step
+                </button>
+                <button id="btn-play" class="px-8 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors flex items-center gap-2 font-bold shadow-lg shadow-blue-500/20">
+                    <i class="ph ph-play" id="play-icon"></i> <span id="play-text">Auto Play</span>
+                </button>
+                <button id="btn-next" class="px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors flex items-center gap-2 font-medium">
+                    Next Step <i class="ph ph-caret-right"></i>
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // State management
+        let steps = [];
+        let currentStepIndex = 0;
+        let isPlaying = false;
+        let playInterval = null;
+
+        // DOM Elements
+        const arrayContainer = document.getElementById('array-container');
+        const varI = document.getElementById('var-i');
+        const varJ = document.getElementById('var-j');
+        const varCurrent = document.getElementById('var-current');
+        const explanationText = document.getElementById('explanation-text');
+        
+        const btnReset = document.getElementById('btn-reset');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnPlay = document.getElementById('btn-play');
+        const btnNext = document.getElementById('btn-next');
+        const playIcon = document.getElementById('play-icon');
+        const playText = document.getElementById('play-text');
+        
+        // New Dynamic Elements
+        const arrayInput = document.getElementById('array-input');
+        const btnUpdateArray = document.getElementById('btn-update-array');
+        const codeArrayDisplay = document.getElementById('code-array-display');
+
+        /**
+         * Simulates the insertion sort execution and pre-computes 
+         * every memory state and code line step to allow flawless playback.
+         * @param {number[]} initialArr - The dynamic array provided by the user
+         */
+        function generateMemoryFlowSteps(initialArr) {
+            let arr = [...initialArr];
+            let flow = [];
+
+            // Helper to record a state
+            const record = (line, i, j, current, desc) => {
+                flow.push({
+                    line,
+                    arr: [...arr],
+                    i: i !== undefined ? i : '-',
+                    j: j !== undefined ? j : '-',
+                    current: current !== undefined ? current : '-',
+                    desc
+                });
+            };
+
+            record(0, undefined, undefined, undefined, "System allocates memory for the array.");
+
+            // Standard Insertion Sort Algorithm matched to lines
+            for (let i = 1; i < arr.length; i++) {
+                record(1, i, undefined, undefined, `Entering 'for' loop. i is now ${i}. The sorted portion is index 0 to ${i-1}.`);
+                
+                let current = arr[i];
+                record(2, i, undefined, current, `Read arr[${i}] (${current}) into memory variable 'current'.`);
+                
+                let j = i - 1;
+                record(3, i, j, current, `Initialize 'j' to ${j} (the element right before i) to start scanning backwards.`);
+                
+                record(4, i, j, current, `Checking 'while' condition: Is j >= 0 (${j >= 0}) AND is arr[${j}] > current (${j >= 0 ? arr[j] + ' > ' + current : 'N/A'})?`);
+                
+                while (j >= 0 && arr[j] > current) {
+                    record(5, i, j, current, `Condition True! arr[${j}] (${arr[j]}) is greater than current (${current}). Copy arr[${j}] to the right (arr[${j+1}]).`);
+                    arr[j + 1] = arr[j];
+                    
+                    record(6, i, j, current, `Decrement j by 1 to check the next element to the left.`);
+                    j--;
+                    
+                    record(4, i, j, current, `Checking 'while' condition again with updated j=${j}.`);
+                }
+                
+                if (j >= 0) {
+                    record(4, i, j, current, `Condition False. arr[${j}] (${arr[j]}) is NOT greater than current (${current}). Stop scanning.`);
+                } else {
+                    record(4, i, j, current, `Condition False. j is less than 0. We've reached the beginning of the array. Stop scanning.`);
+                }
+
+                record(8, i, j, current, `Place the 'current' value (${current}) into the open slot at arr[${j + 1}].`);
+                arr[j + 1] = current;
+                
+                record(9, i, j, current, `End of iteration for i=${i}. The array up to index ${i} is now sorted.`);
+            }
+
+            record(10, '-', '-', '-', "Loop finished. Array is fully sorted! Print to console.");
+            
+            return flow;
+        }
+
+        /**
+         * Updates the UI to reflect a specific step in the memory flow
+         */
+        function renderStep(index) {
+            const step = steps[index];
+            if (!step) return;
+
+            // 1. Update Code Highlight
+            document.querySelectorAll('.code-line').forEach(el => el.classList.remove('active'));
+            const activeLineEl = document.getElementById(`line-${step.line}`);
+            if (activeLineEl) {
+                activeLineEl.classList.add('active');
+                // Auto-scroll code view if needed
+                activeLineEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            // 2. Update Variables Tracking
+            varI.textContent = step.i;
+            varJ.textContent = step.j;
+            varCurrent.textContent = step.current;
+
+            // 3. Update Explanation
+            explanationText.innerHTML = step.desc;
+
+            // 4. Update Array Visualization
+            arrayContainer.innerHTML = '';
+            step.arr.forEach((val, idx) => {
+                const boxContainer = document.createElement('div');
+                boxContainer.className = 'relative flex flex-col items-center group';
+
+                const box = document.createElement('div');
+                box.className = 'w-12 h-14 sm:w-16 sm:h-20 flex items-center justify-center text-xl sm:text-2xl font-bold font-mono rounded-lg shadow-lg transition-all duration-300 border-2';
+                box.textContent = val;
+
+                // Base style (Unsorted section)
+                let bgClass = 'bg-gray-800 text-gray-300';
+                let borderClass = 'border-gray-700';
+
+                // Highlighting Logic based on current state
+                
+                // Sorted Section (Indices before 'i')
+                if (step.i !== '-' && idx < step.i) {
+                    bgClass = 'bg-emerald-900/60 text-emerald-300';
+                    borderClass = 'border-emerald-700/50';
+                }
+                
+                // If the entire array is sorted (End of program)
+                if (step.line === 10) {
+                     bgClass = 'bg-emerald-600 text-white';
+                     borderClass = 'border-emerald-500 shadow-emerald-500/30 shadow-xl';
+                }
+
+                // Target element 'i' (The one being picked up to be inserted)
+                if (idx === step.i && step.line >= 1 && step.line <= 9) {
+                    borderClass = 'border-yellow-400 z-10 shadow-yellow-500/20 shadow-lg';
+                    if (step.line === 2) {
+                        bgClass = 'bg-yellow-600/80 text-white scale-110 -translate-y-2'; // Pick it up
+                    }
+                }
+
+                // Comparing element 'j'
+                if (idx === step.j && (step.line === 4 || step.line === 5 || step.line === 6)) {
+                    borderClass = 'border-red-500 z-10 shadow-red-500/20 shadow-lg';
+                    bgClass = 'bg-red-900/60 text-red-200';
+                }
+
+                // The destination slot shifting (arr[j+1] = arr[j])
+                if (idx === step.j + 1 && step.line === 5) {
+                    bgClass = 'bg-orange-800/80 text-orange-200';
+                    box.style.transform = "translateX(5px)"; // tiny visual shift nudge
+                }
+
+                // The drop destination (arr[j+1] = current)
+                if (idx === step.j + 1 && step.line === 8) {
+                    bgClass = 'bg-blue-600 text-white scale-110 -translate-y-1';
+                    borderClass = 'border-blue-400 z-10 shadow-blue-500/30 shadow-lg';
+                }
+
+                box.className = `w-12 h-14 sm:w-16 sm:h-20 flex items-center justify-center text-xl sm:text-2xl font-bold font-mono rounded-lg shadow-lg transition-all duration-300 border-2 ${bgClass} ${borderClass}`;
+                
+                // Add index label underneath
+                const indexLabel = document.createElement('span');
+                indexLabel.className = 'absolute -bottom-7 text-xs text-gray-500 font-mono';
+                indexLabel.textContent = `[${idx}]`;
+
+                boxContainer.appendChild(box);
+                boxContainer.appendChild(indexLabel);
+                arrayContainer.appendChild(boxContainer);
+            });
+
+            // Update Button States
+            btnPrev.disabled = index === 0;
+            btnPrev.classList.toggle('opacity-50', index === 0);
+            btnPrev.classList.toggle('cursor-not-allowed', index === 0);
+
+            btnNext.disabled = index === steps.length - 1;
+            btnNext.classList.toggle('opacity-50', index === steps.length - 1);
+            btnNext.classList.toggle('cursor-not-allowed', index === steps.length - 1);
+
+            if (index === steps.length - 1 && isPlaying) {
+                togglePlay(); // Auto-stop at the end
+            }
+        }
+
+        // Controls Logic
+        function nextStep() {
+            if (currentStepIndex < steps.length - 1) {
+                currentStepIndex++;
+                renderStep(currentStepIndex);
+            }
+        }
+
+        function prevStep() {
+            if (currentStepIndex > 0) {
+                currentStepIndex--;
+                renderStep(currentStepIndex);
+            }
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                if (currentStepIndex === steps.length - 1) currentStepIndex = 0; // Restart if at end
+                playIcon.classList.remove('ph-play');
+                playIcon.classList.add('ph-pause');
+                playText.textContent = 'Pause';
+                btnPlay.classList.replace('bg-blue-600', 'bg-orange-600');
+                btnPlay.classList.replace('hover:bg-blue-500', 'hover:bg-orange-500');
+                btnPlay.classList.replace('shadow-blue-500/20', 'shadow-orange-500/20');
+                
+                // Set interval to step automatically
+                playInterval = setInterval(nextStep, 1200); // 1.2 seconds per step
+            } else {
+                playIcon.classList.remove('ph-pause');
+                playIcon.classList.add('ph-play');
+                playText.textContent = 'Auto Play';
+                btnPlay.classList.replace('bg-orange-600', 'bg-blue-600');
+                btnPlay.classList.replace('hover:bg-orange-500', 'hover:bg-blue-500');
+                btnPlay.classList.replace('shadow-orange-500/20', 'shadow-blue-500/20');
+                
+                clearInterval(playInterval);
+            }
+        }
+
+        function reset() {
+            if (isPlaying) togglePlay();
+            currentStepIndex = 0;
+            renderStep(currentStepIndex);
+        }
+
+        // Dynamic Package Initialization Logic
+        function initializeVisualizer(inputString) {
+            // Parse input string to array of numbers
+            const rawValues = inputString.split(',').map(val => parseInt(val.trim(), 10));
+            // Filter out NaNs
+            let parsedArray = rawValues.filter(val => !isNaN(val));
+            
+            // Fallback if empty or invalid
+            if (parsedArray.length === 0) {
+                parsedArray = [3, 2, 4, 2, 5, 6, 1];
+                arrayInput.value = parsedArray.join(', ');
+            }
+            
+            // Cap length at 12 for visual constraints so it fits nicely on screen
+            if (parsedArray.length > 12) {
+                parsedArray = parsedArray.slice(0, 12);
+                arrayInput.value = parsedArray.join(', ');
+            }
+
+            // Update code view text
+            codeArrayDisplay.textContent = parsedArray.join(', ');
+
+            // Reset state and regenerate memory steps
+            if (isPlaying) togglePlay();
+            steps = generateMemoryFlowSteps(parsedArray);
+            currentStepIndex = 0;
+            renderStep(currentStepIndex);
+        }
+
+        // Attach listeners
+        btnNext.addEventListener('click', () => {
+            if (isPlaying) togglePlay(); // Pause manual interaction
+            nextStep();
+        });
+        btnPrev.addEventListener('click', () => {
+            if (isPlaying) togglePlay();
+            prevStep();
+        });
+        btnPlay.addEventListener('click', togglePlay);
+        btnReset.addEventListener('click', reset);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                if (isPlaying) togglePlay();
+                nextStep();
+            } else if (e.key === 'ArrowLeft') {
+                if (isPlaying) togglePlay();
+                prevStep();
+            } else if (e.key === ' ' && e.target !== arrayInput) {
+                // Prevent spacebar from toggling play if user is typing in the input
+                e.preventDefault();
+                togglePlay();
+            }
+        });
+
+        // Dynamic Input Listeners
+        btnUpdateArray.addEventListener('click', () => {
+            initializeVisualizer(arrayInput.value);
+        });
+        
+        arrayInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                initializeVisualizer(arrayInput.value);
+            }
+        });
+
+        // Initialization
+        window.onload = () => {
+            initializeVisualizer(arrayInput.value);
+        };
+
+    </script>
+</body>
+</html>
