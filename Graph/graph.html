@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive DSA Graph Notes</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Highlight.js for code formatting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* Custom styles for specific elements not easily handled by Tailwind alone */
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .sidebar { height: calc(100vh - 4rem); position: sticky; top: 4rem; overflow-y: auto; }
+        .content-area { scroll-margin-top: 5rem; }
+        .note-card { transition: transform 0.2s; }
+        .note-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .viz-canvas { border: 1px solid #e5e7eb; border-radius: 0.5rem; background-color: #f9fafb; cursor: pointer; }
+        
+        /* Highlighting key terms */
+        .kw { color: #3b82f6; font-weight: 600; } /* Blue for Keywords */
+        .def { background-color: #fef08a; padding: 0 4px; border-radius: 2px; color: #854d0e; } /* Yellow highlight for Definitions */
+        .important { border-left: 4px solid #ef4444; padding-left: 1rem; margin: 1rem 0; background-color: #fef2f2; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- Navigation -->
+    <nav class="bg-slate-900 text-white p-4 sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold"><i class="fas fa-project-diagram mr-2 text-blue-400"></i> DSA Graph Masterclass</h1>
+            <div>
+                <a href="#intro" class="hover:text-blue-300 mx-2 transition">Intro</a>
+                <a href="#representation" class="hover:text-blue-300 mx-2 transition">Representation</a>
+                <a href="#traversal" class="hover:text-blue-300 mx-2 transition">Traversal</a>
+                <a href="#algorithms" class="hover:text-blue-300 mx-2 transition">Algorithms</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto flex flex-col md:flex-row mt-6 gap-6 px-4 pb-12">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-1/4 hidden md:block sidebar pr-4 border-r border-slate-200">
+            <h3 class="font-bold text-lg mb-4 text-slate-700 uppercase tracking-wider">Table of Contents</h3>
+            <ul class="space-y-2 text-sm text-slate-600 font-medium">
+                <li><a href="#intro" class="block hover:text-blue-600 hover:bg-blue-50 py-1 px-2 rounded">1. Introduction to Graphs</a></li>
+                <li><a href="#terminology" class="block hover:text-blue-600 hover:bg-blue-50 py-1 px-2 rounded pl-4">1.1 Terminology</a></li>
+                <li><a href="#types" class="block hover:text-blue-600 hover:bg-blue-50 py-1 px-2 rounded pl-4">1.2 Types of Graphs</a></li>
+                <li><a href="#tree-vs-graph" class="block hover:text-blue-600 hover:bg-blue-50 py-1 px-2 rounded pl-4">1.3 Tree vs. Graph</a></li>
+                
+                <li><a href="#representation" class="block hover:text-blue-600 hover:bg-blue-50 py-1 px-2 rounded mt-2">2. Graph Representation</a></li>
+                <li><a href="#adj-matrix" class="block hover:text-blue-600 hover:bg-blue-50 py-1 px-2 rounded pl-4">2.1 Adjacency Matrix</a></li>
+                <li><a href="#adj-list" class="block hover:text-blue-600 hover:bg-blue-50 py-1 px-2 rounded pl-4">2.2 Adjacency List</a></li>
+                
+                <li><a href="#traversal" class="block hover:text-blue-600 hover:bg-blue-50 py-1 px-2 rounded mt-2">3. Graph Traversal</a></li>
+                <li><a href="#bfs" class="block hover:text-blue-600 hover:bg-blue-50 py-1 px-2 rounded pl-4">3.1 Breadth-First Search (BFS)</a></li>
+                <li><a href="#dfs" class="block hover:text-blue-600 hover:bg-blue-50 py-1 px-2 rounded pl-4">3.2 Depth-First Search (DFS)</a></li>
+                
+                <li><a href="#advanced-concepts" class="block hover:text-blue-600 hover:bg-blue-50 py-1 px-2 rounded mt-2">4. Advanced Concepts</a></li>
+                <li><a href="#cycles" class="block hover:text-blue-600 hover:bg-blue-50 py-1 px-2 rounded pl-4">4.1 Detecting Cycles</a></li>
+                <li><a href="#shortest-path" class="block hover:text-blue-600 hover:bg-blue-50 py-1 px-2 rounded pl-4">4.2 Shortest Path</a></li>
+                <li><a href="#mst" class="block hover:text-blue-600 hover:bg-blue-50 py-1 px-2 rounded pl-4">4.3 Minimum Spanning Tree</a></li>
+                <li><a href="#bipartite" class="block hover:text-blue-600 hover:bg-blue-50 py-1 px-2 rounded pl-4">4.4 Bipartite Graph</a></li>
+                <li><a href="#tarjan" class="block hover:text-blue-600 hover:bg-blue-50 py-1 px-2 rounded pl-4">4.5 Tarjan's Algorithm (SCC)</a></li>
+                
+                <li><a href="#applications" class="block hover:text-blue-600 hover:bg-blue-50 py-1 px-2 rounded mt-2">5. Real-World Applications</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="w-full md:w-3/4">
+            
+            <!-- Section 1: Introduction -->
+            <section id="intro" class="content-area mb-12 bg-white p-8 rounded-xl shadow-sm border border-slate-100">
+                <h2 class="text-3xl font-bold mb-4 text-slate-800 border-b pb-2"><i class="fas fa-book-open mr-2 text-blue-500"></i> 1. Introduction to Graphs</h2>
+                <p class="mb-4 text-lg text-slate-600">A <span class="kw">Graph</span> is a non-linear data structure consisting of <span class="def">nodes (or vertices)</span> and <span class="def">edges</span> that connect these nodes. Graphs are fundamentally used to represent networks like city roads, social media connections, or computer networks.</p>
+                
+                <div class="important rounded-r-lg">
+                    <p class="text-slate-700"><strong>Formal Definition:</strong> A graph G is an ordered pair G = (V, E) where V is a set of vertices (nodes) and E is a set of edges connecting pairs of vertices.</p>
+                </div>
+
+                <h3 id="terminology" class="text-xl font-semibold mt-8 mb-3 text-slate-700">1.1 Basic Terminology</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 note-card">
+                        <h4 class="font-bold text-blue-700 mb-1">Vertex (Node)</h4>
+                        <p class="text-sm">The fundamental unit of a graph. It holds data.</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 note-card">
+                        <h4 class="font-bold text-blue-700 mb-1">Edge (Link)</h4>
+                        <p class="text-sm">The connection between two vertices.</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 note-card">
+                        <h4 class="font-bold text-blue-700 mb-1">Degree of a Vertex</h4>
+                        <p class="text-sm">The number of edges connected to a vertex. In directed graphs, split into <span class="italic">in-degree</span> (incoming) and <span class="italic">out-degree</span> (outgoing).</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 note-card">
+                        <h4 class="font-bold text-blue-700 mb-1">Path</h4>
+                        <p class="text-sm">A sequence of vertices where each adjacent pair is connected by an edge.</p>
+                    </div>
+                </div>
+
+                <h3 id="types" class="text-xl font-semibold mt-8 mb-3 text-slate-700">1.2 Types of Graphs</h3>
+                <ul class="list-disc pl-6 space-y-2 text-slate-600 mb-6">
+                    <li><strong>Directed Graph (Digraph):</strong> Edges have a specific direction (A &rarr; B). Like Twitter followers.</li>
+                    <li><strong>Undirected Graph:</strong> Edges have no direction (A &mdash; B). Like Facebook friends.</li>
+                    <li><strong>Weighted Graph:</strong> Edges have a value (weight or cost) associated with them. E.g., distance between cities.</li>
+                    <li><strong>Unweighted Graph:</strong> Edges have no weight (assumed uniform cost).</li>
+                    <li><strong>Cyclic Graph:</strong> Contains at least one graph cycle (a path that starts and ends on the same vertex).</li>
+                    <li><strong>Acyclic Graph:</strong> Contains no cycles. (e.g., Directed Acyclic Graph - DAG).</li>
+                    <li><strong>Complete Graph:</strong> Every pair of distinct vertices is connected by a unique edge. (Edges = <code>n*(n-1)/2</code>).</li>
+                    <li><strong>Disconnected Graph:</strong> There is at least one pair of vertices without a path between them. It consists of multiple <em>connected components</em>.</li>
+                </ul>
+
+                <h3 id="tree-vs-graph" class="text-xl font-semibold mt-8 mb-3 text-slate-700">1.3 Graph vs. Tree</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700">
+                                <th class="p-3 border border-slate-300 rounded-tl-lg">Feature</th>
+                                <th class="p-3 border border-slate-300">Tree</th>
+                                <th class="p-3 border border-slate-300 rounded-tr-lg">Graph</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm text-slate-600">
+                            <tr>
+                                <td class="p-3 border border-slate-200 font-semibold">Structure</td>
+                                <td class="p-3 border border-slate-200">Hierarchical</td>
+                                <td class="p-3 border border-slate-200">Network model</td>
+                            </tr>
+                            <tr class="bg-slate-50">
+                                <td class="p-3 border border-slate-200 font-semibold">Cycles</td>
+                                <td class="p-3 border border-slate-200">Never contains cycles (Acyclic)</td>
+                                <td class="p-3 border border-slate-200">Can contain cycles (Cyclic or Acyclic)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border border-slate-200 font-semibold">Root Node</td>
+                                <td class="p-3 border border-slate-200">Always has one root node</td>
+                                <td class="p-3 border border-slate-200">No concept of a root node</td>
+                            </tr>
+                            <tr class="bg-slate-50">
+                                <td class="p-3 border border-slate-200 font-semibold">Connectivity</td>
+                                <td class="p-3 border border-slate-200">Always connected</td>
+                                <td class="p-3 border border-slate-200">Can be disconnected</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Section 2: Representation -->
+            <section id="representation" class="content-area mb-12 bg-white p-8 rounded-xl shadow-sm border border-slate-100">
+                <h2 class="text-3xl font-bold mb-4 text-slate-800 border-b pb-2"><i class="fas fa-sitemap mr-2 text-green-500"></i> 2. Graph Representation</h2>
+                <p class="mb-4 text-slate-600">How do we store graphs in memory? There are two primary methods used in implementation.</p>
+
+                <h3 id="adj-matrix" class="text-xl font-semibold mt-6 mb-3 text-slate-700">2.1 Adjacency Matrix</h3>
+                <p class="mb-2 text-slate-600">A 2D array of size <code>V x V</code> where <code>V</code> is the number of vertices. If <code>adj[i][j] == 1</code>, there is an edge from vertex <code>i</code> to vertex <code>j</code>.</p>
+                <ul class="list-disc pl-6 mb-4 text-sm text-slate-600">
+                    <li><strong>Space Complexity:</strong> O(V²) - Not efficient for sparse graphs.</li>
+                    <li><strong>Checking Edge Existence:</strong> O(1) - Very fast.</li>
+                    <li><strong>Finding Neighbors:</strong> O(V) - Have to scan the whole row.</li>
+                </ul>
+                <pre><code class="language-javascript rounded-lg shadow-inner">
+class GraphMatrix {
+    constructor(numVertices) {
+        this.numVertices = numVertices;
+        // Initialize a V x V matrix with 0s
+        this.matrix = Array(numVertices).fill().map(() => Array(numVertices).fill(0));
+    }
+
+    addEdge(v1, v2) {
+        this.matrix[v1][v2] = 1;
+        this.matrix[v2][v1] = 1; // For undirected graph
+    }
+}
+                </code></pre>
+
+                <h3 id="adj-list" class="text-xl font-semibold mt-8 mb-3 text-slate-700">2.2 Adjacency List (Most Common)</h3>
+                <p class="mb-2 text-slate-600">An array (or Map/Dictionary) of lists. The index represents the vertex, and the list at that index contains all its adjacent vertices.</p>
+                <ul class="list-disc pl-6 mb-4 text-sm text-slate-600">
+                    <li><strong>Space Complexity:</strong> O(V + E) - Highly efficient for sparse graphs.</li>
+                    <li><strong>Finding Neighbors:</strong> Fast, just iterate through the specific list.</li>
+                </ul>
+                <pre><code class="language-javascript rounded-lg shadow-inner">
+class GraphList {
+    constructor() {
+        this.adjList = new Map(); // Using Map to handle any type of vertex (string, number, object)
+    }
+
+    addVertex(vertex) {
+        if (!this.adjList.has(vertex)) {
+            this.adjList.set(vertex, []);
+        }
+    }
+
+    addEdge(v1, v2) {
+        // Assume unweighted, undirected graph
+        this.adjList.get(v1).push(v2);
+        this.adjList.get(v2).push(v1); 
+    }
+}
+                </code></pre>
+            </section>
+
+            <!-- Section 3: Traversal with Interactivity -->
+            <section id="traversal" class="content-area mb-12 bg-white p-8 rounded-xl shadow-sm border border-slate-100">
+                <h2 class="text-3xl font-bold mb-4 text-slate-800 border-b pb-2"><i class="fas fa-route mr-2 text-purple-500"></i> 3. Graph Traversal</h2>
+                <p class="mb-6 text-slate-600">Traversal means visiting every vertex in the graph. Unlike trees, graphs can have cycles, so we must track <span class="def">visited nodes</span> to avoid infinite loops.</p>
+
+                <!-- Interactive Visualization Canvas -->
+                <div class="bg-slate-800 p-4 rounded-xl shadow-lg mb-8 relative">
+                    <h3 class="text-white text-lg font-bold mb-2 text-center">Interactive Traversal Visualization</h3>
+                    <div class="flex justify-center gap-4 mb-4">
+                        <button onclick="startBFS()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded font-semibold transition shadow">Run BFS (Level by Level)</button>
+                        <button onclick="startDFS()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded font-semibold transition shadow">Run DFS (Deep First)</button>
+                        <button onclick="resetGraphVis()" class="bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded font-semibold transition shadow">Reset</button>
+                    </div>
+                    <canvas id="graphCanvas" width="600" height="300" class="w-full bg-slate-900 rounded-lg cursor-crosshair"></canvas>
+                    <p id="traversalOutput" class="text-green-400 font-mono mt-3 text-center min-h-[1.5rem]"></p>
+                </div>
+
+                <h3 id="bfs" class="text-xl font-semibold mt-6 mb-3 text-slate-700">3.1 Breadth-First Search (BFS)</h3>
+                <p class="mb-4 text-slate-600">Explores the graph level by level. It uses a <span class="kw">Queue</span> (FIFO) data structure. Excellent for finding the shortest path in unweighted graphs.</p>
+                <pre><code class="language-javascript rounded-lg shadow-inner">
+function BFS(startVertex, adjList) {
+    let visited = new Set();
+    let queue = [startVertex]; // Initialize queue with start node
+    let result = [];
+
+    visited.add(startVertex);
+
+    while (queue.length > 0) {
+        let current = queue.shift(); // Dequeue (remove from front)
+        result.push(current);
+
+        // Get all neighbors of current vertex
+        let neighbors = adjList.get(current) || [];
+        
+        for (let neighbor of neighbors) {
+            if (!visited.has(neighbor)) {
+                visited.add(neighbor);
+                queue.push(neighbor); // Enqueue unvisited neighbors
+            }
+        }
+    }
+    return result;
+}
+                </code></pre>
+
+                <h3 id="dfs" class="text-xl font-semibold mt-8 mb-3 text-slate-700">3.2 Depth-First Search (DFS)</h3>
+                <p class="mb-4 text-slate-600">Goes as deep as possible down one path before backtracking. Uses a <span class="kw">Stack</span> (LIFO) or recursion. Good for detecting cycles, topological sorting, and solving puzzles (backtracking).</p>
+                <pre><code class="language-javascript rounded-lg shadow-inner">
+function DFS(startVertex, adjList) {
+    let visited = new Set();
+    let result = [];
+
+    // Recursive helper function
+    function dfsHelper(vertex) {
+        visited.add(vertex);
+        result.push(vertex);
+
+        let neighbors = adjList.get(vertex) || [];
+        for (let neighbor of neighbors) {
+            if (!visited.has(neighbor)) {
+                dfsHelper(neighbor); // Recursive call to go deep
+            }
+        }
+    }
+
+    dfsHelper(startVertex);
+    return result;
+}
+                </code></pre>
+            </section>
+
+            <!-- Section 4: Advanced Algorithms -->
+            <section id="advanced-concepts" class="content-area mb-12 bg-white p-8 rounded-xl shadow-sm border border-slate-100">
+                <h2 class="text-3xl font-bold mb-4 text-slate-800 border-b pb-2"><i class="fas fa-brain mr-2 text-red-500"></i> 4. Advanced Concepts & Algorithms</h2>
+
+                <h3 id="cycles" class="text-xl font-semibold mt-6 mb-3 text-slate-700">4.1 Detecting Cycles in a Graph</h3>
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h4 class="font-bold text-slate-700">In Undirected Graphs</h4>
+                        <p class="text-sm text-slate-600">Use DFS or BFS. Keep track of the <code>parent</code> node. If you visit a node that is already visited AND is not the parent of the current node, a cycle exists.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-700">In Directed Graphs</h4>
+                        <p class="text-sm text-slate-600">Use DFS. Keep track of a <code>recursion stack</code> (or path visited in current DFS call). If you encounter a node already in the current recursion stack, a back-edge exists, meaning there is a cycle.</p>
+                    </div>
+                </div>
+
+                <h3 id="shortest-path" class="text-xl font-semibold mt-8 mb-3 text-slate-700">4.2 Shortest Path Algorithms</h3>
+                <ul class="space-y-3 text-slate-600">
+                    <li class="bg-slate-50 p-3 rounded border border-slate-200"><strong>BFS:</strong> Best for <em>unweighted</em> graphs to find shortest distance between vertices.</li>
+                    <li class="bg-slate-50 p-3 rounded border border-slate-200"><strong>Dijkstra's Algorithm:</strong> For graphs with <em>non-negative weights</em>. Uses a priority queue/min-heap to constantly pick the node with the smallest known distance.</li>
+                    <li class="bg-slate-50 p-3 rounded border border-slate-200"><strong>Bellman-Ford Algorithm:</strong> Can handle <em>negative weights</em> and detect negative weight cycles. Slower than Dijkstra (O(V*E)).</li>
+                    <li class="bg-slate-50 p-3 rounded border border-slate-200"><strong>Floyd-Warshall Algorithm:</strong> All-pairs shortest path. Dynamic programming approach (O(V³)).</li>
+                </ul>
+
+                <h3 id="mst" class="text-xl font-semibold mt-8 mb-3 text-slate-700">4.3 Minimum Spanning Tree (MST)</h3>
+                <p class="mb-4 text-slate-600">A subgraph that connects all vertices without any cycles and with the minimum possible total edge weight. (Used in network design, laying cables).</p>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="border-l-4 border-indigo-500 pl-4 py-2">
+                        <h4 class="font-bold">Prim's Algorithm</h4>
+                        <p class="text-sm text-slate-600">Starts with a single node, grows the MST by greedily picking the smallest edge connecting a visited node to an unvisited node. (Uses Priority Queue).</p>
+                    </div>
+                    <div class="border-l-4 border-teal-500 pl-4 py-2">
+                        <h4 class="font-bold">Kruskal's Algorithm</h4>
+                        <p class="text-sm text-slate-600">Sorts all edges by weight. Greedily adds the smallest edge to the MST unless it forms a cycle. (Uses Disjoint Set / Union-Find data structure).</p>
+                    </div>
+                </div>
+
+                <h3 id="bipartite" class="text-xl font-semibold mt-8 mb-3 text-slate-700">4.4 Bipartite Graph</h3>
+                <p class="mb-4 text-slate-600">A graph whose vertices can be divided into two disjoint sets U and V such that every edge connects a vertex in U to one in V. (Graph Coloring: Can it be colored with just 2 colors without adjacent nodes having the same color?)</p>
+
+                <h3 id="tarjan" class="text-xl font-semibold mt-8 mb-3 text-slate-700">4.5 Tarjan's Algorithm & Strongly Connected Components (SCC)</h3>
+                <p class="mb-4 text-slate-600">In a directed graph, an SCC is a portion where every vertex is reachable from every other vertex in that portion. Tarjan's uses DFS, keeping track of discovery times and lowest reachable discovery times to find SCCs in O(V+E) time.</p>
+            </section>
+
+            <!-- Section 5: Applications -->
+            <section id="applications" class="content-area mb-12 bg-white p-8 rounded-xl shadow-sm border border-slate-100">
+                <h2 class="text-3xl font-bold mb-4 text-slate-800 border-b pb-2"><i class="fas fa-globe mr-2 text-yellow-500"></i> 5. Graph Applications in Real Life</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+                    
+                    <div class="bg-blue-50 p-5 rounded-lg border border-blue-100">
+                        <i class="fas fa-map-marked-alt text-2xl text-blue-500 mb-3"></i>
+                        <h4 class="font-bold text-slate-800">Maps & Navigation</h4>
+                        <p class="text-sm text-slate-600 mt-2">Google Maps uses Graphs. Intersections are nodes, roads are edges. Dijkstra/A* finds the shortest route.</p>
+                    </div>
+
+                    <div class="bg-indigo-50 p-5 rounded-lg border border-indigo-100">
+                        <i class="fas fa-users text-2xl text-indigo-500 mb-3"></i>
+                        <h4 class="font-bold text-slate-800">Social Networks</h4>
+                        <p class="text-sm text-slate-600 mt-2">"Mutual friends" features or connection suggestions (LinkedIn) use BFS to find friends of friends.</p>
+                    </div>
+
+                    <div class="bg-green-50 p-5 rounded-lg border border-green-100">
+                        <i class="fas fa-network-wired text-2xl text-green-500 mb-3"></i>
+                        <h4 class="font-bold text-slate-800">Computer Networks</h4>
+                        <p class="text-sm text-slate-600 mt-2">Routing protocols use algorithms like Bellman-Ford to find paths for data packets.</p>
+                    </div>
+
+                    <div class="bg-red-50 p-5 rounded-lg border border-red-100">
+                        <i class="fas fa-search text-2xl text-red-500 mb-3"></i>
+                        <h4 class="font-bold text-slate-800">Web Crawlers</h4>
+                        <p class="text-sm text-slate-600 mt-2">Search engines use graph traversal to follow links (edges) from one webpage (node) to another.</p>
+                    </div>
+                    
+                    <div class="bg-purple-50 p-5 rounded-lg border border-purple-100">
+                        <i class="fas fa-sitemap text-2xl text-purple-500 mb-3"></i>
+                        <h4 class="font-bold text-slate-800">Task Scheduling</h4>
+                        <p class="text-sm text-slate-600 mt-2">Resolving dependencies (e.g., compiling code, taking prerequisite courses) using Topological Sorting on a DAG.</p>
+                    </div>
+                    
+                    <div class="bg-yellow-50 p-5 rounded-lg border border-yellow-100">
+                        <i class="fas fa-cube text-2xl text-yellow-500 mb-3"></i>
+                        <h4 class="font-bold text-slate-800">Solving Puzzles</h4>
+                        <p class="text-sm text-slate-600 mt-2">Problems like "Number of Islands" (matrix traversal) or solving Sudoku use DFS and Backtracking.</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <footer class="bg-slate-900 text-slate-400 py-6 text-center">
+        <p>Created for mastering Data Structures and Algorithms.</p>
+    </footer>
+
+    <script>
+        // Initialize Syntax Highlighting
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre code').forEach((el) => {
+                hljs.highlightElement(el);
+            });
+            drawGraph(); // Draw initial static graph
+        });
+
+        // --- Graph Visualization Logic ---
+        const canvas = document.getElementById('graphCanvas');
+        const ctx = canvas.getContext('2d');
+        const output = document.getElementById('traversalOutput');
+
+        // Define nodes with physical positions for drawing
+        const nodes = [
+            { id: 0, x: 300, y: 50, label: '0' },
+            { id: 1, x: 150, y: 120, label: '1' },
+            { id: 2, x: 450, y: 120, label: '2' },
+            { id: 3, x: 100, y: 220, label: '3' },
+            { id: 4, x: 250, y: 220, label: '4' },
+            { id: 5, x: 350, y: 220, label: '5' },
+            { id: 6, x: 500, y: 220, label: '6' }
+        ];
+
+        // Adjacency List for logical traversal and drawing edges
+        const adjList = {
+            0: [1, 2],
+            1: [0, 3, 4],
+            2: [0, 5, 6],
+            3: [1],
+            4: [1, 5],
+            5: [2, 4],
+            6: [2]
+        };
+
+        let currentFrame = 0;
+        let animationInterval = null;
+
+        // Draw the static graph
+        function drawGraph(activeNodeId = null, visitedSet = new Set(), pathEdges = []) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw Edges
+            ctx.lineWidth = 2;
+            for (let u in adjList) {
+                u = parseInt(u);
+                for (let v of adjList[u]) {
+                    if (u < v) { // Draw each undirected edge only once
+                        
+                        // Check if edge is part of active traversal path
+                        let isPath = pathEdges.some(edge => (edge[0]===u && edge[1]===v) || (edge[0]===v && edge[1]===u));
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[u].x, nodes[u].y);
+                        ctx.lineTo(nodes[v].x, nodes[v].y);
+                        ctx.strokeStyle = isPath ? '#10b981' : '#475569'; // Emerald for path, Slate for default
+                        if(isPath) ctx.lineWidth = 4;
+                        else ctx.lineWidth = 2;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Draw Nodes
+            nodes.forEach(node => {
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, 20, 0, Math.PI * 2);
+                
+                if (node.id === activeNodeId) {
+                    ctx.fillStyle = '#f59e0b'; // Amber for currently processing
+                    ctx.strokeStyle = '#fff';
+                } else if (visitedSet.has(node.id)) {
+                    ctx.fillStyle = '#10b981'; // Emerald for visited
+                    ctx.strokeStyle = '#059669';
+                } else {
+                    ctx.fillStyle = '#1e293b'; // Slate dark for default
+                    ctx.strokeStyle = '#cbd5e1'; // Slate light border
+                }
+                
+                ctx.fill();
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // Draw Text
+                ctx.fillStyle = '#fff';
+                ctx.font = '16px monospace';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(node.label, node.x, node.y);
+            });
+        }
+
+        // --- BFS Algorithm with Animation Tracking ---
+        async function startBFS() {
+            resetState();
+            let visited = new Set();
+            let queue = [0]; // Start at node 0
+            visited.add(0);
+            
+            let traversalOrder = [];
+            let pathEdges = [];
+
+            while (queue.length > 0) {
+                let current = queue.shift();
+                traversalOrder.push(current);
+                
+                output.innerText = `BFS Traversal: [ ${traversalOrder.join(' -> ')} ]`;
+                drawGraph(current, visited, pathEdges);
+                await sleep(800); // Animation delay
+
+                for (let neighbor of adjList[current]) {
+                    if (!visited.has(neighbor)) {
+                        visited.add(neighbor);
+                        queue.push(neighbor);
+                        pathEdges.push([current, neighbor]);
+                        
+                        // Briefly highlight the edge being explored
+                        drawGraph(neighbor, visited, pathEdges);
+                        await sleep(400);
+                    }
+                }
+            }
+            drawGraph(null, visited, pathEdges); // Final state
+            output.innerHTML = `BFS Complete: <span class="text-white bg-green-600 px-2 py-1 rounded">[ ${traversalOrder.join(' -> ')} ]</span>`;
+        }
+
+        // --- DFS Algorithm with Animation Tracking ---
+        async function startDFS() {
+            resetState();
+            let visited = new Set();
+            let traversalOrder = [];
+            let pathEdges = [];
+
+            async function dfsHelper(node, parent) {
+                visited.add(node);
+                traversalOrder.push(node);
+                
+                if (parent !== null) pathEdges.push([parent, node]);
+                
+                output.innerText = `DFS Traversal: [ ${traversalOrder.join(' -> ')} ]`;
+                drawGraph(node, visited, pathEdges);
+                await sleep(800);
+
+                for (let neighbor of adjList[node]) {
+                    if (!visited.has(neighbor)) {
+                        await dfsHelper(neighbor, node);
+                        
+                        // Backtracking visualization
+                        drawGraph(node, visited, pathEdges);
+                        await sleep(400);
+                    }
+                }
+            }
+
+            await dfsHelper(0, null); // Start at node 0
+            drawGraph(null, visited, pathEdges); // Final state
+            output.innerHTML = `DFS Complete: <span class="text-white bg-purple-600 px-2 py-1 rounded">[ ${traversalOrder.join(' -> ')} ]</span>`;
+        }
+
+        // Utility functions
+        function resetState() {
+            if(animationInterval) clearInterval(animationInterval);
+            output.innerText = 'Initializing traversal...';
+        }
+
+        function resetGraphVis() {
+            resetState();
+            output.innerText = '';
+            drawGraph();
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>

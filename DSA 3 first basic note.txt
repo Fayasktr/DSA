@@ -20,3 +20,29 @@ impliments:-
 *)traversal:- pre order:-fist look the main then left and right.
 in order:- first look the left side then main then right.
 post order:- first left then right then only the main.
+
+
+Insert
+Search
+Traversals 
+Delete
+Height of tree
+Count nodes
+Maximum depth of tree
+BFS
+Validate BST
+Find minimum/maximum
+Recursive thinking
+
+
+
+algorithms in mentor session
+___________________________
+Dijkstra’s Algorithm
+Bellman-Ford Algorithm
+Floyd-Warshall Algorithm
+Cycle Detection
+shortest path
+
+
+
